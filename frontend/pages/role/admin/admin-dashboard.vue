@@ -1,8 +1,5 @@
-<!--admin-dashboard.vue-->
-
 <template>
   <div v-if="isAuthenticated" class="min-h-screen bg-gray-50 p-6">
-    <!-- Top navigation bar -->
     <div
       class="mb-8 bg-white rounded-xl shadow p-4 flex justify-between items-center"
     >
@@ -83,7 +80,6 @@
       </div>
     </div>
 
-    <!-- Notification Pop-up -->
     <div
       v-if="newNotification"
       class="fixed top-4 right-4 bg-red-600 text-white p-4 rounded-lg shadow-lg max-w-sm z-50"
@@ -619,20 +615,17 @@ const addExam = async () => {
 
 const updateExam = async () => {
   try {
-    const response = await fetch(
-      `${apiUrl}/exam/${newExam.value.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nama_ujian: newExam.value.nama_ujian,
-          durasi: newExam.value.durasi,
-          jumlah_soal: newExam.value.jumlah_soal,
-        }),
-      }
-    );
+    const response = await fetch(`${apiUrl}/exam/${newExam.value.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nama_ujian: newExam.value.nama_ujian,
+        durasi: newExam.value.durasi,
+        jumlah_soal: newExam.value.jumlah_soal,
+      }),
+    });
 
     if (response.ok) {
       closeModal();

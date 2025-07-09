@@ -4,45 +4,33 @@
     class="h-screen sticky top-0 w-64 bg-gray-800 text-white flex flex-col shadow-lg transition-all duration-300"
     :class="{ 'w-20': isCollapsed }"
   >
-    <!-- Header with collapsible toggle -->
     <div
-      class="px-6 py-4 flex items-center justify-between border-b border-gray-700"
+      class="px-4 py-4 flex items-center border-b border-gray-700"
+      :class="[isCollapsed ? 'justify-center' : 'justify-between']"
     >
       <div v-if="!isCollapsed" class="text-xl font-bold truncate">
         {{ isAdmin ? "Admin Panel" : "User Panel" }}
       </div>
-      <div v-else class="text-xl font-bold mx-auto">
+      <div v-else class="text-xl font-bold">
         {{ isAdmin ? "A" : "U" }}
       </div>
       <button
         @click="toggleSidebar"
         class="text-gray-400 hover:text-white focus:outline-none"
+        :class="{ 'ml-4': !isCollapsed }"
         :title="isCollapsed ? 'Expand' : 'Collapse'"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
+        <i
           class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            v-if="isCollapsed"
-            fill-rule="evenodd"
-            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-            clip-rule="evenodd"
-          />
-          <path
-            v-else
-            fill-rule="evenodd"
-            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-            clip-rule="evenodd"
-          />
-        </svg>
+          :class="isCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left'"
+        ></i>
       </button>
     </div>
 
-    <!-- User profile section -->
-    <div class="px-4 py-3 border-b border-gray-700 flex items-center">
+    <div
+      class="px-4 py-3 border-b border-gray-700 flex items-center"
+      :class="{ 'justify-center': isCollapsed }"
+    >
       <div class="rounded-full bg-gray-600 flex-shrink-0">
         <img
           v-if="userAvatar"
@@ -65,9 +53,7 @@
       </div>
     </div>
 
-    <!-- Navigation section -->
     <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-      <!-- Admin Menu -->
       <template v-if="isAdmin">
         <div class="mb-4">
           <div
@@ -84,9 +70,11 @@
               activePath === '/role/admin/admin-dashboard'
                 ? 'bg-blue-600 text-white'
                 : 'text-gray-300 hover:bg-gray-700',
+              { 'justify-center': isCollapsed },
             ]"
+            title="Dashboard"
           >
-            <i class="fas fa-house"></i>
+            <i class="fas fa-house w-5 text-center"></i>
             <span v-if="!isCollapsed" class="ml-3">Dashboard</span>
           </NuxtLink>
 
@@ -97,15 +85,16 @@
               activePath === '/role/admin/logs'
                 ? 'bg-blue-600 text-white'
                 : 'text-gray-300 hover:bg-gray-700',
+              { 'justify-center': isCollapsed },
             ]"
+            title="Fraud Logs"
           >
-            <i class="fas fa-book"></i>
+            <i class="fas fa-book w-5 text-center"></i>
             <span v-if="!isCollapsed" class="ml-3">Fraud Logs</span>
           </NuxtLink>
         </div>
       </template>
 
-      <!-- User Menu -->
       <template v-else>
         <div class="mb-4">
           <div
@@ -122,20 +111,22 @@
               activePath === '/role/user/user-dashboard'
                 ? 'bg-blue-600 text-white'
                 : 'text-gray-300 hover:bg-gray-700',
+              { 'justify-center': isCollapsed },
             ]"
+            title="Dashboard"
           >
-            <i class="fas fa-house"></i>
+            <i class="fas fa-house w-5 text-center"></i>
             <span v-if="!isCollapsed" class="ml-3">Dashboard</span>
           </NuxtLink>
         </div>
       </template>
     </nav>
 
-    <!-- Footer with logout button -->
     <div class="px-4 py-4 border-t border-gray-700">
       <button
         @click="logout"
         class="w-full flex items-center justify-center bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-white transition-colors"
+        title="Logout"
       >
         <i class="fas fa-sign-out"></i>
         <span v-if="!isCollapsed" class="ml-2">Logout</span>
@@ -164,6 +155,7 @@ const userInitials = computed(() => {
 });
 
 const isCollapsed = ref(localStorage.getItem("sidebarCollapsed") === "true");
+
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value;
   localStorage.setItem("sidebarCollapsed", isCollapsed.value.toString());
@@ -183,14 +175,12 @@ const logout = () => {
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
     localStorage.removeItem("userAvatar");
-
     router.push("/menu/login");
   }
 };
 
 onMounted(() => {
   const token = localStorage.getItem("token");
-
   if (!token && !hiddenRoutes.includes(route.path)) {
     router.push("/menu/login");
   }
